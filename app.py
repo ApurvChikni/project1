@@ -46,7 +46,7 @@ STATIC_FOLDER = 'static'
 #with graph.as_default():;
 from tensorflow.keras.models import load_model
 model = load_model('model111.h5')
-model222=load_model("my_model.h5")
+model222=load_model("model_full_inceptionv3.h5")
 
 #FOR THE FIRST MODEL
 
@@ -61,7 +61,7 @@ def api(full_path):
     return predicted
 #FOR THE SECOND MODEL
 def api1(full_path):
-    data = image.load_img(full_path, target_size=(64, 64, 3))
+    data = image.load_img(full_path, target_size=(224, 224, 3))
     data = np.expand_dims(data, axis=0)
     data = data * 1.0 / 255
 
