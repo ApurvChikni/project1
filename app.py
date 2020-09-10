@@ -5,6 +5,7 @@ from sklearn.externals import joblib
 from flask import request
 import numpy as np
 import tensorflow
+from tensorflow.keras.applications.inception_v3 import preprocess_input
 #from keras.layers import Conv2D, MaxPooling2D, Dense, Dropout, Input, Flatten, SeparableConv2D
 #from flask_sqlalchemy import SQLAlchemy
 #from model_class import DiabetesCheck, CancerCheck
@@ -61,9 +62,10 @@ def api(full_path):
     return predicted
 #FOR THE SECOND MODEL
 def api1(full_path):
-    data = image.load_img(full_path, target_size=(64, 64, 3))
-    data = np.expand_dims(data, axis=0)
-    data = data * 1.0 / 255
+    data = image.load_img(full_path, target_size=(224,224))
+    data1 =image.img_to_array(data)
+    data1 = np.expand_dims(data1, axis=0)
+    data1 = preprocess_input(data1)
 
     #with graph.as_default():
     predicted = model222.predict(data)
@@ -113,12 +115,12 @@ def upload11_file():
             file.save(full_name)
             indices = {0: 'Normal', 1: 'Pneumonia'}
             result = api1(full_name)
-            if(result>50):
+            if(result[0][1]>0.50):
                 label= indices[1]
-                accuracy= result
+                accuracy= result[0][1]
             else:
                 label= indices[0]
-                accuracy= 100-result
+                accuracy= result[0][0]
             return render_template('predict1.html', image_file_name = file.filename, label = label, accuracy = accuracy)
         except:
             flash("Please select the image first !!", "danger")      
